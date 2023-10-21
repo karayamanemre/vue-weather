@@ -14,14 +14,15 @@
 				<p v-if="!serverError && mapboxResults.length === 0">
 					No results found for "{{ searchQuery }}, try a different search term.
 				</p>
-				<Template v-else>
+				<template v-else>
 					<li
 						v-for="searchResult in mapboxResults"
 						:key="searchResult.id"
-						class="py-2 cursor-pointer">
+						@click="previewCity(searchResult)"
+						class="px-1 py-2 cursor-pointer hover:bg-gray-600">
 						{{ searchResult.place_name }}
 					</li>
-				</Template>
+				</template>
 			</ul>
 		</div>
 	</main>
@@ -30,6 +31,26 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const previewCity = (searchResult) => {
+	console.log(searchResult);
+	const [city, state, country] = searchResult.place_name.split(", ");
+	router.push({
+		name: "city",
+		params: {
+			city: city.replaceAll(" ", ""),
+			state: state.replaceAll(" ", ""),
+			country: country.replaceAll(" ", ""),
+		},
+		query: {
+			lat: searchResult.geometry.coordinates[1],
+			lon: searchResult.geometry.coordinates[0],
+			preview: true,
+		},
+	});
+};
 
 const mapboxToken = import.meta.env.VITE_APP_MAPBOX_TOKEN;
 
