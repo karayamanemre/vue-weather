@@ -11,7 +11,7 @@
 				v-if="mapboxResults"
 				class="absolute bg-weather-secondary text-white shadow-lg py-2 px-2 w-full top-[66px]">
 				<p v-if="searchError">Something went wrong, please try again later.</p>
-				<p v-if="!serverError && mapboxResults.length === 0">
+				<p v-if="!searchError && mapboxResults.length === 0">
 					No results found for "{{ searchQuery }}, try a different search term.
 				</p>
 				<template v-else>
