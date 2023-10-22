@@ -35,14 +35,12 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const previewCity = (searchResult) => {
-	console.log(searchResult);
-	const [city, state, country] = searchResult.place_name.split(", ");
+	const [city, country] = searchResult.place_name.split(", ");
 	router.push({
 		name: "city",
 		params: {
-			city: city.replaceAll(" ", ""),
-			state: state.replaceAll(" ", ""),
-			country: country.replaceAll(" ", ""),
+			city: city,
+			country: country,
 		},
 		query: {
 			lat: searchResult.geometry.coordinates[1],
