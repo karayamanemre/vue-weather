@@ -27,7 +27,7 @@ const getCities = async () => {
 		savedCities.value.forEach((city) => {
 			requests.push(
 				axios.get(
-					`http://api.weatherapi.com/v1/current.json?key=${
+					`https://api.weatherapi.com/v1/current.json?key=${
 						import.meta.env.VITE_APP_WEATHER_API_KEY
 					}&q=${city.coords.lat},${city.coords.lon}&aqi=no`
 				)

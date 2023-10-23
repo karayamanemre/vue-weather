@@ -217,7 +217,7 @@ const route = useRoute();
 const getWeatherData = async () => {
 	try {
 		const weatherData = await axios.get(
-			`http://api.weatherapi.com/v1/forecast.json?key=${
+			`https://api.weatherapi.com/v1/forecast.json?key=${
 				import.meta.env.VITE_APP_WEATHER_API_KEY
 			}&q=${route.query.lat},${route.query.lon}&days=3&aqi=yes&alerts=yes`
 		);
