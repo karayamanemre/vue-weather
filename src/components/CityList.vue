@@ -6,6 +6,10 @@
 			:city="city"
 			@click="goToCityView(city)" />
 	</div>
+
+	<p v-if="savedCities.length === 0">
+		No locations added. To start tracking a location, use the search bar above.
+	</p>
 </template>
 
 <script setup>
