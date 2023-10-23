@@ -24,7 +24,7 @@
 					{{ city.weather.current.condition.text }}
 				</p>
 			</div>
-			<div>
+			<div class="self-end">
 				<span>
 					Feels like: {{ Math.round(city.weather.current.feelslike_c) }}
 				</span>
