@@ -4,13 +4,13 @@
 			<AnimatedPlaceholder class="max-w-[300px] w-full mb-4" />
 			<AnimatedPlaceholder class="max-w-[300px] w-full mb-4" />
 			<AnimatedPlaceholder class="max-w-[300px] w-full mb-4 h-[100px]" />
-			<AnimatedPlaceholder class="max-w-[30px] w-full" />
+			<AnimatedPlaceholder class="max-w-[100px] h-[75px] w-full" />
 		</div>
 
 		<hr class="w-full border border-white border-opacity-10" />
 
-		<div class="flex items-center w-full max-w-screen-md py-12">
-			<AnimatedPlaceholder class="max-w-[300px] w-full mb-4" />
+		<div class="flex items-center w-full max-w-screen-md px-6 py-12">
+			<AnimatedPlaceholder class="max-w-[300px] w-full mb-4 h-[200px]" />
 		</div>
 
 		<hr class="w-full border border-white border-opacity-10" />
