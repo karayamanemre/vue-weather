@@ -38,7 +38,8 @@
 		<div class="w-full max-w-screen-md py-12">
 			<div class="mx-8 text-white">
 				<h2 class="mb-4">Hourly Weather</h2>
-				<div class="flex gap-4 py-4 overflow-x-scroll">
+				<div
+					class="flex gap-4 py-4 overflow-x-scroll scrollbar scrollbar-rounded scrollbar-thumb-[#454756] scrollbar-track-[#2E213A]">
 					<div
 						v-for="hour in next24HourForecast"
 						:key="hour.time_epoch"
@@ -82,6 +83,29 @@
 
 		<hr class="w-full border border-white border-opacity-10" />
 
+		<!-- Past 7 Days Weather -->
+		<div class="w-full max-w-screen-md py-12">
+			<div class="mx-8 text-white">
+				<h2 class="mb-4">Past 7 Days</h2>
+				<div
+					class="flex gap-4 py-4 overflow-x-scroll scrollbar scrollbar-rounded scrollbar-thumb-[#454756] scrollbar-track-[#2E213A]">
+					<div
+						v-for="day in pastWeekWeather"
+						:key="day.date"
+						class="flex flex-col items-center justify-between h-56 p-4 space-y-1 w-36 bg-weather-secondary rounded-2xl">
+						<p class="text-sm text-center">{{ day.date }}</p>
+						<img
+							:src="day.day.condition.icon"
+							:alt="day.day.condition.text"
+							class="w-12 h-12" />
+						<p class="text-xs text-center">{{ day.day.condition.text }}</p>
+						<p class="text-lg">{{ Math.round(day.day.avgtemp_c) }}°C</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr class="w-full border border-white border-opacity-10" />
 		<!-- air quality -->
 		<div class="w-full max-w-screen-md py-12">
 			<div class="mx-8 text-white">
@@ -201,6 +225,7 @@
 		</div>
 
 		<div
+			v-if="isCitySaved"
 			class="flex items-center gap-2 py-12 text-white duration-150 cursor-pointer hover:text-red-500"
 			@click="removeCity">
 			<i class="text-2xl fas fa-trash"></i>
@@ -212,6 +237,15 @@
 <script setup>
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import { computed } from "vue";
+
+const isCitySaved = computed(() => {
+	const savedCities = JSON.parse(localStorage.getItem("savedCities") || "[]");
+	return savedCities.some(
+		(city) =>
+			city.coords.lat === route.query.lat && city.coords.lon === route.query.lon
+	);
+});
 
 const route = useRoute();
 const getWeatherData = async () => {
@@ -246,6 +280,34 @@ const remainingHours = 24 - hoursFromToday.length;
 const hoursFromTomorrow = tomorrowHourlyForecast.slice(0, remainingHours);
 
 const next24HourForecast = [...hoursFromToday, ...hoursFromTomorrow];
+
+const getPastWeatherData = async (date) => {
+	try {
+		const response = await axios.get(
+			`https://api.weatherapi.com/v1/history.json?key=${
+				import.meta.env.VITE_APP_WEATHER_API_KEY
+			}&q=${route.query.lat},${route.query.lon}&dt=${date}`
+		);
+		return response.data;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+// Fetch past 7 days weather data
+const pastWeekWeather = [];
+const currentDate = new Date();
+for (let i = 1; i <= 7; i++) {
+	const previousDate = new Date(currentDate);
+	previousDate.setDate(currentDate.getDate() - i);
+	const formattedDate = `${previousDate.getFullYear()}-${String(
+		previousDate.getMonth() + 1
+	).padStart(2, "0")}-${String(previousDate.getDate()).padStart(2, "0")}`;
+	const dayWeather = await getPastWeatherData(formattedDate);
+	if (dayWeather && dayWeather.forecast && dayWeather.forecast.forecastday) {
+		pastWeekWeather.push(dayWeather.forecast.forecastday[0]);
+	}
+}
 
 const router = useRouter();
 const removeCity = () => {

@@ -4,8 +4,8 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				"weather-primary": "#1E213A",
-				"weather-secondary": "#100E1D",
+				"weather-primary": "#2E213A",
+				"weather-secondary": "#200E1D",
 			},
 		},
 		fontFamily: {
@@ -20,5 +20,5 @@ module.exports = {
 			md: "768px",
 		},
 	},
-	plugins: [],
+	plugins: [require("tailwind-scrollbar")],
 };
