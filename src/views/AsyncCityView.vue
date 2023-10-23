@@ -177,6 +177,8 @@ const getWeatherData = async () => {
 			}&q=${route.query.lat},${route.query.lon}&days=3&aqi=yes&alerts=yes`
 		);
 
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+
 		return weatherData;
 	} catch (error) {
 		console.log(error);
