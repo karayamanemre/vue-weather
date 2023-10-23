@@ -1,32 +1,34 @@
 <template>
-	<header class="sticky top-0 bg-weather-primary shadow-xl">
+	<header class="sticky top-0 shadow-xl bg-weather-primary">
 		<nav
-			class="container flex flex-col sm:flex-row items-center gap-4 text-white py-6">
+			class="container flex flex-col items-center gap-4 py-6 text-white sm:flex-row">
 			<RouterLink :to="{ name: 'home' }">
 				<div class="flex items-center gap-3">
-					<i class="fas fa-cloud-sun-rain text-3xl"></i>
+					<i class="text-3xl fas fa-cloud-sun-rain"></i>
 					<p class="text-2xl">Local Weather</p>
 				</div>
 			</RouterLink>
 
-			<div class="flex gap-3 flex-1 justify-end">
+			<div class="flex justify-end flex-1 gap-3">
 				<i
-					class="fas fa-circle-info text-2xl hover:text-gray-400 duration-150 cursor-pointer"
+					class="text-2xl duration-150 cursor-pointer fas fa-circle-info hover:text-gray-400"
 					@click="toggleModal"></i>
 				<i
-					class="fas fa-plus text-2xl hover:text-gray-400 duration-150 cursor-pointer"></i>
+					class="text-2xl duration-150 cursor-pointer fas fa-plus hover:text-gray-400"
+					@click="addCity"
+					v-if="route.query.preview"></i>
 			</div>
 			<BaseModal
 				:modalActive="modalActive"
 				@close-modal="toggleModal">
 				<div class="text-black">
-					<h1 class="text-2xl mb-1">About:</h1>
+					<h1 class="mb-1 text-2xl">About:</h1>
 					<p class="mb-4">
 						The Local Weather allows you to track the current and future weather
 						of cities of your choosing.
 					</p>
 					<h2 class="text-2xl">How it works:</h2>
-					<ol class="list-decimal list-inside mb-4">
+					<ol class="mb-4 list-decimal list-inside">
 						<li>
 							Search for your city by entering the name into the search bar.
 						</li>
@@ -54,8 +56,36 @@
 
 <script setup>
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import { uid } from "uid";
 import BaseModal from "./BaseModal.vue";
+
+const savedCities = ref([]);
+const route = useRoute();
+const router = useRouter();
+
+const addCity = () => {
+	if (localStorage.getItem("savedCities")) {
+		savedCities.value = JSON.parse(localStorage.getItem("savedCities"));
+	}
+
+	const locationObj = {
+		id: uid(),
+		city: route.params.city,
+		country: route.params.country,
+		coords: {
+			lat: route.query.lat,
+			lon: route.query.lon,
+		},
+	};
+
+	savedCities.value.push(locationObj);
+	localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+	let query = Object.assign({}, route.query);
+	delete query.preview;
+	router.replace({ query });
+};
 
 const modalActive = ref(null);
 const toggleModal = () => {
