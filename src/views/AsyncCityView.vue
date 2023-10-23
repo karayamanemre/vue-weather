@@ -62,7 +62,7 @@
 		<div class="w-full max-w-screen-md py-12">
 			<div class="mx-8 text-white">
 				<h2 class="mb-4">3 Days Forecast</h2>
-				<div class="flex gap-4 py-4">
+				<div class="flex justify-center gap-6 py-4">
 					<div
 						v-for="day in weatherData.data.forecast.forecastday"
 						:key="day.date"
@@ -86,72 +86,117 @@
 		<div class="w-full max-w-screen-md py-12">
 			<div class="mx-8 text-white">
 				<h2 class="mb-4">Air Quality</h2>
+				<div class="p-4 bg-weather-secondary rounded-2xl">
+					<p class="flex flex-col gap-2 mt-4">
+						<span class="flex justify-between"
+							>Carbon Monoxide (CO):<span>
+								{{ weatherData.data.current.air_quality.co }}
+								μg/m3
+							</span></span
+						>
+						<span class="flex justify-between"
+							>Ozone (O3):<span>
+								{{ weatherData.data.current.air_quality.o3 }}
+								μg/m3
+							</span></span
+						>
+						<span class="flex justify-between"
+							>Nitrogen dioxide (NO2):<span>
+								{{ weatherData.data.current.air_quality.no2 }}
+								μg/m3
+							</span></span
+						>
+						<span class="flex justify-between"
+							>Sulphur dioxide (SO2):<span>
+								{{ weatherData.data.current.air_quality.so2 }}
+								μg/m3
+							</span></span
+						>
+						<span class="flex justify-between"
+							>PM2.5:<span>
+								{{ weatherData.data.current.air_quality.pm2_5 }}
+								μg/m3
+							</span></span
+						>
+						<span class="flex justify-between"
+							>PM10:<span
+								>{{ weatherData.data.current.air_quality.pm10 }} μg/m3</span
+							></span
+						>
+					</p>
 
-				<div class="grid grid-cols-2 gap-4">
-					<p>Carbon Monoxide (CO):</p>
-					<p>{{ weatherData.data.current.air_quality.co }} μg/m3</p>
+					<p class="flex justify-between mt-2">
+						US - EPA standard:
+						<span v-if="(weatherData.data.current.air_quality.us_epa_index = 1)"
+							>Good</span
+						>
+						<span
+							v-else-if="
+								(weatherData.data.current.air_quality.us_epa_index = 2)
+							"
+							>Moderate</span
+						>
+						<span
+							v-else-if="
+								(weatherData.data.current.air_quality.us_epa_index = 3)
+							"
+							>Unhealthy for Sensitive Groups</span
+						>
+						<span
+							v-else-if="
+								(weatherData.data.current.air_quality.us_epa_index = 4)
+							"
+							>Unhealthy</span
+						>
+						<span
+							v-else-if="
+								(weatherData.data.current.air_quality.us_epa_index = 5)
+							"
+							>Very Unhealthy</span
+						>
+						<span
+							v-else-if="
+								(weatherData.data.current.air_quality.us_epa_index = 6)
+							"
+							>Hazardous</span
+						>
+					</p>
 
-					<p>Ozone (O3):</p>
-					<p>{{ weatherData.data.current.air_quality.o3 }} μg/m3</p>
-
-					<p>Nitrogen dioxide (NO2):</p>
-					<p>{{ weatherData.data.current.air_quality.no2 }} μg/m3</p>
-
-					<p>Sulphur dioxide (SO2):</p>
-					<p>{{ weatherData.data.current.air_quality.so2 }} μg/m3</p>
-
-					<p>PM2.5:</p>
-					<p>{{ weatherData.data.current.air_quality.pm2_5 }} μg/m3</p>
-
-					<p>PM10:</p>
-					<p>{{ weatherData.data.current.air_quality.pm10 }} μg/m3</p>
+					<p class="flex justify-between mt-2">
+						UK Defra Index:
+						<span
+							v-if="
+								weatherData.data.current.air_quality['gb-defra-index'] >= 1 &&
+								weatherData.data.current.air_quality['gb-defra-index'] <= 3
+							"
+							>Low</span
+						>
+						<span
+							v-else-if="
+								weatherData.data.current.air_quality['gb-defra-index'] >= 4 &&
+								weatherData.data.current.air_quality['gb-defra-index'] <= 6
+							"
+							>Moderate</span
+						>
+						<span
+							v-else-if="
+								weatherData.data.current.air_quality['gb-defra-index'] >= 7 &&
+								weatherData.data.current.air_quality['gb-defra-index'] <= 9
+							"
+							>High</span
+						>
+						<span
+							v-else-if="
+								weatherData.data.current.air_quality['gb-defra-index'] > 9
+							"
+							>Very High</span
+						>
+						<span v-else
+							>Unexpected Value:
+							{{ weatherData.data.current.air_quality["gb-defra-index"] }}</span
+						>
+					</p>
 				</div>
-
-				<p class="mt-4">
-					US - EPA standard:
-					<span v-if="(weatherData.data.current.air_quality.us_epa_index = 1)"
-						>Good</span
-					>
-					<span
-						v-else-if="(weatherData.data.current.air_quality.us_epa_index = 2)"
-						>Moderate</span
-					>
-					<span
-						v-else-if="(weatherData.data.current.air_quality.us_epa_index = 3)"
-						>Unhealthy for Sensitive Groups</span
-					>
-					<span
-						v-else-if="(weatherData.data.current.air_quality.us_epa_index = 4)"
-						>Unhealthy</span
-					>
-					<span
-						v-else-if="(weatherData.data.current.air_quality.us_epa_index = 5)"
-						>Very Unhealthy</span
-					>
-					<span
-						v-else-if="(weatherData.data.current.air_quality.us_epa_index = 6)"
-						>Hazardous</span
-					>
-				</p>
-
-				<p>
-					UK Defra Index:
-					<span>{{ weatherData.data.current.air_quality.gb_defra_index }}</span>
-					(<!-- Corresponding band interpretation based on the index -->
-					<span v-if="weatherData.data.current.air_quality.gb_defra_index <= 3"
-						>Low</span
-					>
-					<span
-						v-else-if="weatherData.data.current.air_quality.gb_defra_index <= 6"
-						>Moderate</span
-					>
-					<span
-						v-else-if="weatherData.data.current.air_quality.gb_defra_index <= 9"
-						>High</span
-					>
-					<span v-else>Very High</span>
-					)
-				</p>
 			</div>
 		</div>
 
