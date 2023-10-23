@@ -1,36 +1,42 @@
 <template>
 	<div class="flex flex-col items-center flex-1">
-		<div
-			v-if="route.query.preview"
-			class="w-full p-4 text-center text-white bg-weather-secondary">
-			<p>
-				You are currently previewing the city, click the "+" icon to start
-				tracking it.
-			</p>
-		</div>
+		<!-- Lottie animation container -->
+		<div class="relative w-full max-w-screen-lg py-12">
+			<div
+				id="lottie-animation"
+				v-if="
+					shouldShowRainAnimation ||
+					shouldShowSnowAnimation ||
+					shouldShowWindAnimation
+				"
+				class="absolute inset-0"></div>
 
-		<div class="flex flex-col items-center py-12 space-y-3 text-white">
-			<h1 class="text-3xl">{{ weatherData.data.location.name }}</h1>
-			<p class="text-sm">
-				{{ weatherData.data.location.region }},
-				{{ weatherData.data.location.country }}
-			</p>
-			<p class="text-sm">
-				Local Time: {{ weatherData.data.location.localtime }}
-			</p>
-			<p class="flex items-center text-xl">
-				{{ weatherData.data.current.condition.text }}
-				<img
-					:src="weatherData.data.current.condition.icon"
-					:alt="weatherData.data.current.condition.text"
-					class="w-16 h-16" />
-			</p>
+			<!-- Content (Always visible) -->
+			<div class="relative flex flex-col items-center space-y-3 text-white">
+				<h1 class="text-3xl">{{ weatherData.data.location.name }}</h1>
+				<p class="text-sm">
+					{{ weatherData.data.location.region }},
+					{{ weatherData.data.location.country }}
+				</p>
+				<p class="text-sm">
+					Local Time: {{ weatherData.data.location.localtime }}
+				</p>
+				<p class="flex items-center text-xl">
+					{{ weatherData.data.current.condition.text }}
+					<img
+						:src="weatherData.data.current.condition.icon"
+						:alt="weatherData.data.current.condition.text"
+						class="w-16 h-16" />
+				</p>
 
-			<p class="text-6xl">
-				{{ Math.round(weatherData.data.current.temp_c) }}
-				<span class="text-2xl">°C</span>
-			</p>
-			<p>Feels like: {{ Math.round(weatherData.data.current.feelslike_c) }}</p>
+				<p class="text-6xl">
+					{{ Math.round(weatherData.data.current.temp_c) }}
+					<span class="text-2xl">°C</span>
+				</p>
+				<p>
+					Feels like: {{ Math.round(weatherData.data.current.feelslike_c) }}
+				</p>
+			</div>
 		</div>
 
 		<hr class="w-full border border-white border-opacity-10" />
@@ -237,7 +243,8 @@
 <script setup>
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
-import { computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import lottie from "lottie-web";
 
 const isCitySaved = computed(() => {
 	const savedCities = JSON.parse(localStorage.getItem("savedCities") || "[]");
@@ -293,6 +300,47 @@ const getPastWeatherData = async (date) => {
 		console.log(error);
 	}
 };
+
+const lottieInstance = ref(null);
+
+const shouldShowRainAnimation = computed(() => {
+	return weatherData.data.current.condition.text.includes("rain");
+});
+
+const shouldShowSnowAnimation = computed(() => {
+	return weatherData.data.current.condition.text.includes("snow");
+});
+
+const shouldShowWindAnimation = computed(() => {
+	return weatherData.data.current.condition.text.includes("wind");
+});
+
+onMounted(() => {
+	let animationPath = "";
+	if (shouldShowRainAnimation.value) {
+		animationPath = "/animation_lo39nxbr.json";
+	} else if (shouldShowSnowAnimation.value) {
+		animationPath = "/animation_lo3anjhu.json";
+	} else if (shouldShowWindAnimation.value) {
+		animationPath = "/wind_animation.json";
+	}
+
+	if (animationPath) {
+		lottieInstance.value = lottie.loadAnimation({
+			container: document.getElementById("lottie-animation"),
+			renderer: "svg",
+			loop: true,
+			autoplay: true,
+			path: animationPath,
+		});
+	}
+});
+
+onBeforeUnmount(() => {
+	if (lottieInstance.value) {
+		lottieInstance.value.destroy();
+	}
+});
 
 // Fetch past 7 days weather data
 const pastWeekWeather = [];
