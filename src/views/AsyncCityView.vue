@@ -154,12 +154,19 @@
 				</p>
 			</div>
 		</div>
+
+		<div
+			class="flex items-center gap-2 py-12 text-white duration-150 cursor-pointer hover:text-red-500"
+			@click="removeCity">
+			<i class="text-2xl fas fa-trash"></i>
+			<p>Remove City</p>
+		</div>
 	</div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const getWeatherData = async () => {
@@ -192,5 +199,14 @@ const remainingHours = 24 - hoursFromToday.length;
 const hoursFromTomorrow = tomorrowHourlyForecast.slice(0, remainingHours);
 
 const next24HourForecast = [...hoursFromToday, ...hoursFromTomorrow];
-console.log(weatherData);
+
+const router = useRouter();
+const removeCity = () => {
+	const cities = JSON.parse(localStorage.getItem("savedCities"));
+	const updatedCities = cities.filter((city) => city.id !== route.query.id);
+	localStorage.setItem("savedCities", JSON.stringify(updatedCities));
+	router.push({
+		name: "home",
+	});
+};
 </script>
