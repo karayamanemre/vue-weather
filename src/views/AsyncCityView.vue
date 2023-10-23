@@ -27,10 +27,10 @@
 			</p>
 
 			<p class="text-6xl">
-				{{ weatherData.data.current.temp_c }}
+				{{ Math.round(weatherData.data.current.temp_c) }}
 				<span class="text-2xl">°C</span>
 			</p>
-			<p>Feels like: {{ weatherData.data.current.feelslike_c }}</p>
+			<p>Feels like: {{ Math.round(weatherData.data.current.feelslike_c) }}</p>
 		</div>
 
 		<hr class="w-full border border-white border-opacity-10" />
