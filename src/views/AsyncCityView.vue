@@ -69,19 +69,20 @@
 		<div class="w-full max-w-screen-md py-12">
 			<div class="mx-8 text-white">
 				<h2 class="mb-4">3 Days Forecast</h2>
-				<div class="flex justify-center gap-6 py-4">
+				<div class="flex gap-4 py-4">
 					<div
 						v-for="day in weatherData.data.forecast.forecastday"
 						:key="day.date"
-						class="flex flex-col items-center justify-between h-48 p-4 space-y-1 w-36 bg-weather-secondary rounded-2xl">
-						<p class="text-sm">{{ day.date }}</p>
+						class="flex flex-col items-center justify-between w-40 p-4 space-y-1 h-52 bg-weather-secondary rounded-2xl">
+						<p class="text-sm text-center">{{ day.date }}</p>
 						<img
 							:src="day.day.condition.icon"
 							:alt="day.day.condition.text"
 							class="w-12 h-12" />
 						<p class="text-xs text-center">{{ day.day.condition.text }}</p>
-						<p class="text-lg">Max: {{ Math.round(day.day.maxtemp_c) }}°C</p>
-						<p class="text-lg">Min: {{ Math.round(day.day.mintemp_c) }}°C</p>
+						<p class="text-lg text-center">
+							{{ Math.round(day.day.avgtemp_c) }}°C
+						</p>
 					</div>
 				</div>
 			</div>
